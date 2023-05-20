@@ -95,6 +95,8 @@
         var ss = smw.getSeconds();//秒
         $("#ul_lift").html("<li><h1>当前时间为: </h1></li>").append("<li><h1>"+ff+"年"+pp+"月"+yy+"日"+"</h1></li>").append("<li><h1>"+hh+"点"+mm+"分"+ss+"秒"+"</h1></li>").append("<li>页面高度尺寸:"+window.innerHeight+"</li>")
             .append("<li>页面宽度尺寸"+window.innerWidth+"</li>");
+        alert("页面高度尺寸:"+window.innerHeight);
+        alert("页面宽度尺寸:"+window.innerWidth);
     }
     getTime();
     setInterval(getTime,1000)
