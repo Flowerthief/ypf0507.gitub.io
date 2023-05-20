@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+    }
+    ul li{
+        list-style: none;
+        font-size: 1px;
+    }
+    #left,#right{
+        float: left;
+        width: 33%;
+        height: 70%;
+        background-color: aqua;
+        color: black;
+        animation: spread 5s ease-in 0.1s
+        1 alternate backwards;
+    }
+    @keyframes spread {
+        0%{height: 0}
+        0%{opacity: 0}
+        100%{opacity: 1}
+        100%{height: 70%}
+    }
+    #middle{
+        float: left;
+        width: 34%;
+        height: 70%;
+        background-color: pink;
+        animation: spread 5s ease-in 0.1s
+        1 alternate backwards;
+    }
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+    canvas{
+        width: 100%;
+        height: 100%;
+        animation: spreads 6s ease-in 0.1s
+        1 alternate backwards;
+    }
+    @keyframes spreads {
+        0%{opacity: 0}
+        90%{opacity: 0}
+        100%{opacity: 1}
+    }
+    ul{
+        width: 100%;
+        height: 100%;
+        animation: spreads 6s ease-in 0.1s
+        1 alternate backwards;
+    }
+    #image-container{
+        width: 100%;
+    }
+</style>
+<body id="body">
+<div id="left">
+    <ul id="ul_lift"></ul>
+</div>
+<div id="middle">
+    <input type="file" id="file-input"> <br>
+    <button onclick="handleFileSelect()">确定转换</button> <br>
+    <button onclick="download()">保存至电脑</button>
+</div>
+<div id="right">
+    <canvas id="clock" width="400" height="400"></canvas>
+</div>
+<div id="image-container"  align="center">
+    <img src="" alt="" id="image">
+</div>
+</body>
+<script src="static/js/download.js" type="text/javascript"></script>
+<script src="static/js/handleFileSelect.js"></script>
+<script src="static/js/jquery.js" type="text/javascript"></script>
+<script src="static/js/clock.js" type="text/javascript"></script>
+<script>
+    function operate() {
+        $("#body").css("background-color: black;")
+    }
+    function getTime() {
+        var smw = new Date();
+        var hh = smw.getHours();//当前小时
+        var mm = smw.getMinutes();//当前分钟
+        var ff = smw.getFullYear();//年
+        var pp = smw.getMonth();//月
+        var yy = smw.getDate();//日
+        var ss = smw.getSeconds();//秒
+        $("#ul_lift").html("<li><h1>当前时间为: </h1></li>").append("<li><h1>"+ff+"年"+pp+"月"+yy+"日"+"</h1></li>").append("<li><h1>"+hh+"点"+mm+"分"+ss+"秒"+"</h1></li>");
+    }
+    getTime();
+    setInterval(getTime,1000)
+</script>
+</html>
