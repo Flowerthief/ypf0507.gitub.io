@@ -1,10 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频网站解析</title>
 </head>
+<style>
+    h1,p{
+        text-align:center;
+    }
+    iframe{
+        display: flex;
+        justify-self: center;
+        border: none;
+    }
+</style>
 <body>
-<img src="img/HTML.jpg" alt="">
+    <!--网页头部-->
+    <header>
+    <h1>视频网站解析,可解析爱奇艺,腾讯视频之类的视频软件</h1>
+    </header>
+    <!-- 网页身体 -->
+    <section>
+    <!-- 内嵌其他网页 -->
+     <!-- width: 800 1646 -->
+      <!-- height: 600 878 -->
+    <iframe id="myIframe" onload="iframeSize()"  src="https://jx.xmflv.com/?url=" style="border:1px solid black;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen>
+        你的浏览器太垃圾了。
+    </iframe>
+    </section>
+    <!-- 页面底部 -->
+    <footer>
+    <p>请输入需要的视频链接:<input type="text" id="urlGet" placeholder="请输入需要的视频链接"><input type="button" value="提交" onclick="updateInput()"></p>
+    </footer>
 </body>
+<script>
+    // 禁用 F12 和开发者工具快捷键
+    document.onkeydown = function(event) {
+            if (event.keyCode == 123) {
+                alert("你不乖哦!");
+                event.preventDefault();
+            }
+            if (event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+                alert("你不乖哦!");
+                event.preventDefault();
+            }
+        };
+    // 禁用右键菜单
+    document.addEventListener('contextmenu', function(event) {
+        alert("你不乖哦!");
+        event.preventDefault();
+    });
+    window.onload = function() {
+            // 获取视口宽度和高度
+            var viewportWidth = window.innerWidth;
+            var viewportHeight = window.innerHeight;
+
+            // 获取 iframe 元素
+            var iframe = document.getElementById('myIframe');
+
+            // 设置 iframe 的宽度和高度
+            iframe.style.width = (viewportWidth / 2) + 'px';  
+            iframe.style.height = (viewportHeight * 0.75) + 'px';
+        }
+    function updateInput(){
+        //获得输入框中的值
+        var inputValue = document.getElementById('urlGet').value;
+        
+        //获取iframe元素
+        var iframe = document.getElementById('myIframe');
+
+        //将获取到的内容赋值给iframe的src
+        iframe.src = "https://jx.xmflv.com/?url=" + inputValue;
+    }
+</script>
 </html>
