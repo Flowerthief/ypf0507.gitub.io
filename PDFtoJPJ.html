@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF转图片</title>
+    <script src="./pdf.min.js"></script>
+    <style>
+        .controls {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .scale-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pdf-image {
+            transition: all 0.3s ease;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="pdfFile" accept=".pdf" />
+    
+    <div class="controls" id="controls" style="display: none;">
+        <div class="scale-control">
+            <label>显示比例:</label>
+            <input type="range" id="scaleSlider" min="10" max="100" value="50" step="5">
+            <span id="scaleValue">50%</span>
+            <button onclick="resetScale()">重置</button>
+        </div>
+    </div>
+    
+    <div id="imageContainer"></div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.js';
+        
+        let currentImages = []; // 存储所有图片元素
+
+        document.getElementById('pdfFile').addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                await convertPdfToImages(file);
+            }
+        });
+
+        // 缩放控制
+        document.getElementById('scaleSlider').addEventListener('input', function(e) {
+            const scale = e.target.value + '%';
+            document.getElementById('scaleValue').textContent = scale;
+            
+            currentImages.forEach(img => {
+                img.style.width = scale;
+            });
+        });
+
+        function resetScale() {
+            document.getElementById('scaleSlider').value = 50;
+            document.getElementById('scaleValue').textContent = '50%';
+            
+            currentImages.forEach(img => {
+                img.style.width = '50%';
+            });
+        }
+
+        async function convertPdfToImages(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const imageContainer = document.getElementById('imageContainer');
+                imageContainer.innerHTML = '';
+                currentImages = [];
+                
+                // 显示控制面板
+                document.getElementById('controls').style.display = 'block';
+
+                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                    const page = await pdf.getPage(pageNumber);
+                    const viewport = page.getViewport({ scale: 2.0 });
+
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise;
+
+                    const imageUrl = canvas.toDataURL('image/png');
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.className = 'pdf-image';
+                    img.style.width = '50%'; // 初始显示为50%大小
+                    img.style.display = 'block';
+                    img.style.margin = '0 auto';
+
+                    // 保存图片引用用于后续缩放
+                    currentImages.push(img);
+
+                    const downloadBtn = document.createElement('button');
+                    downloadBtn.textContent = `下载第${pageNumber}页`;
+                    downloadBtn.onclick = () => downloadImage(imageUrl, `page_${pageNumber}.png`);
+
+                    const pageDiv = document.createElement('div');
+                    pageDiv.style.textAlign = 'center';
+                    pageDiv.style.marginBottom = '30px';
+                    pageDiv.appendChild(img);
+                    pageDiv.appendChild(downloadBtn);
+                    imageContainer.appendChild(pageDiv);
+                }
+
+            } catch (error) {
+                console.error('转换失败:', error);
+            }
+        }
+
+        function downloadImage(dataUrl, filename) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = filename;
+            link.click();
+        }
+    </script>
+</body>
+</html>
