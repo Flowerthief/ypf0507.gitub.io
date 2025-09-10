@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>PDF转图片</title>
-    <script src="js/pdf.min.js"></script>
+    <script src="start/js/pdf.min.js"></script>
     <style>
         .controls {
             margin: 15px 0;
@@ -37,7 +37,7 @@
     <div id="imageContainer"></div>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/pdf.worker.min.js';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'start/js/pdf.worker.min.js';
         
         let currentImages = []; // 存储所有图片元素
 
